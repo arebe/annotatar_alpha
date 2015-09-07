@@ -14,10 +14,27 @@ if (Meteor.isClient) {
     var ar = $('#ar'),
     canvas = $('canvas', ar)[0],
     context = canvas.getContext('2d'),
-    video = $('video', ar)[0];
+    video = $('video', ar)[0],
+    navLat, navLong;
 
     context.font = "20px serif";
     context.fillStyle = "#3264FF";
+
+    try {
+      if ("geolocation" in navigator){
+        navigator.geolocation.getCurrentPosition(function(position){
+          navLat = position.coords.latitude;
+          navLong = position.coords.longitude;
+          console.log("lat: ", navLat, " long: ", navLong, " accuracy: ", position.coords.accuracy);
+        });
+      }
+      else{
+        navLat = 0;
+        navLong = 0;
+      }
+    } catch(err){
+      console.log("geolocation error: ", err);
+    }
 
     try{
       navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
@@ -47,15 +64,16 @@ if (Meteor.isClient) {
     } catch(err){
       console.log("navigator.getUserMedia error: ", err);
     }
+
     video.style.position = "absolute";
     video.style.visibility = "hidden";
 
     setInterval(function(){
       var img = context.drawImage(video, 0, 0, 800, 500);
-      renderTweets();
+      ("geolocation" in navigator) ? renderTweets() : renderNoTweets("Please enable geolocation for full AR experience!");
     }, 200);
 
-    function renderTweets(){
+    var renderTweets = function(){
       var tweets = Tweets.find({}, {sort: {createdAt: -1}}).fetch();
       if(!tweets.length) {
         console.log("no tweets");
@@ -65,14 +83,20 @@ if (Meteor.isClient) {
         globalAlpha = data.createdAt %255;
         context.fillText(data.text, data.xPos, data.yPos);
       });
+
+    }
+
+    var renderNoTweets = function(message){
+      for(var i = 0; i < 30; i++){
+        context.fillStyle("#f11");
+        context.fillText(message, 10, (10*i));
+      }
     }
   });
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    // config_twit = Npm.require('./config_twit');
-
     Twit = new TwitMaker({
     consumer_key:         Meteor.settings.twitter.consumer_key
   , consumer_secret:      Meteor.settings.twitter.consumer_secret
@@ -107,7 +131,7 @@ if (Meteor.isServer) {
     // );
 
 // uncomment to turn the stream on:
-    stream.on('tweet', handleStream);
+//    stream.on('tweet', handleStream);
   });
 
 Meteor.publish("tweets", function () {
