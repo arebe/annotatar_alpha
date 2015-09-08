@@ -3,7 +3,7 @@
 body {
   font-family: sans-serif;
   background-color: #315481;
-  background-image: linear-gradient(to bottom, #000, #3264FF 100%);
+  background-image: linear-gradient(135deg, #000, #3264FF 98%);
   background-attachment: fixed;
 
   position: absolute;
@@ -124,4 +124,14 @@ header .hide-completed {
   .new-task input {
     padding-bottom: 5px;
   }
+}
+
+/* my stylez */
+
+#dynamsg p{
+  color: #333;
+  padding-left: 2em;
+  padding-top: 0.5em;
+  background-color: #0a1433;
+  background-image: linear-gradient(to bottom, #0a1433, #e6e7ea 50%);
 }

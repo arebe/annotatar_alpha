@@ -1,5 +1,7 @@
 Tweets = new Mongo.Collection("tweets");
 
+Hashtags = new Mongo.Colletion("hashtags");
+
 if (Meteor.isClient) {
   // This code only runs on the client
   Meteor.subscribe("tweets");
@@ -15,7 +17,7 @@ if (Meteor.isClient) {
     canvas = $('canvas', ar)[0],
     context = canvas.getContext('2d'),
     video = $('video', ar)[0],
-    navLat, navLong;
+    navLat, navLong, accurate;
 
     context.font = "20px serif";
     context.fillStyle = "#3264FF";
@@ -23,9 +25,12 @@ if (Meteor.isClient) {
     try {
       if ("geolocation" in navigator){
         navigator.geolocation.getCurrentPosition(function(position){
+          accurate = (position.coords.accuracy <= 100) ? true : false;
           navLat = position.coords.latitude;
           navLong = position.coords.longitude;
+          $("#dynamsg").append('<p>latitude: '+navLat+' longitude: '+navLong+' accuracy: <span id="acc">'+position.coords.accuracy+'</span></p>');
           console.log("lat: ", navLat, " long: ", navLong, " accuracy: ", position.coords.accuracy);
+          accurate ? $("#acc").css("color", "#2d7317") : $("#acc").css("color", "#73172d");
         });
       }
       else{
@@ -34,6 +39,7 @@ if (Meteor.isClient) {
       }
     } catch(err){
       console.log("geolocation error: ", err);
+      $("#dynamsg").append("<p>geolocation error: ", err,"</p>");
     }
 
     try{
@@ -102,9 +108,9 @@ if (Meteor.isServer) {
   , consumer_secret:      Meteor.settings.twitter.consumer_secret
   , access_token:         Meteor.settings.twitter.access_token
   , access_token_secret:  Meteor.settings.twitter.access_token_secret
-});
+  });
 
-    var handleTweets = Meteor.bindEnvironment(function(err, data, response) {
+  var handleTweets = Meteor.bindEnvironment(function(err, data, response) {
       console.log(data);
       console.log(err);
       for(var i = 0; i < data.statuses.length; i++){
@@ -113,7 +119,7 @@ if (Meteor.isServer) {
       
     });
 
-    var handleStream = Meteor.bindEnvironment(function(tweet, err){
+  var handleStream = Meteor.bindEnvironment(function(tweet, err){
       debugger;
       console.log("***********************", err, "***********************");
       console.log("+++++++++++++++++++++++",tweet,"+++++++++++++++++++++++");
@@ -131,7 +137,7 @@ if (Meteor.isServer) {
     // );
 
 // uncomment to turn the stream on:
-//    stream.on('tweet', handleStream);
+   // stream.on('tweet', handleStream);
   });
 
 Meteor.publish("tweets", function () {
