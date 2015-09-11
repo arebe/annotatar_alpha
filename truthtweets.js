@@ -20,6 +20,9 @@ if (Meteor.isClient) {
     navLat, navLong, accurate,
     hashtag;
 
+
+    context.canvas.width = $(window).width();
+    context.canvas.height = $(window).height();
     context.font = "20px serif";
     context.fillStyle = "#3264FF";
 
@@ -76,9 +79,10 @@ if (Meteor.isClient) {
     video.style.visibility = "hidden";
 
     setInterval(function(){
-      var img = context.drawImage(video, 0, 0, 800, 500);
-      ("geolocation" in navigator) ? renderTweets() : renderNoTweets("Please enable geolocation for full AR experience!");
-    }, 200);
+      var img = context.drawImage(video, 0, 0);
+      renderTweets();
+      //("geolocation" in navigator) ? renderTweets() : renderNoTweets("Please enable geolocation for full AR experience!");
+    }, 100);
 
     var renderTweets = function(){
       var tweets = Tweets.find({}, {sort: {createdAt: -1}}).fetch();
@@ -141,7 +145,7 @@ if (Meteor.isServer) {
 
 
 // ******  uncomment to turn the stream on: ****** //
-   stream.on('tweet', handleStream);
+   // stream.on('tweet', handleStream);
  });
 
 Meteor.publish("tweets", function () {
