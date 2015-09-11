@@ -95,11 +95,9 @@ if (Meteor.isClient) {
         // 14400000ms == 4 hrs
         // 3600000ms == 1 hr
         // 1200000ms = 20min
-        var time = {
-          "hour": 3600000,
-          "min": 60000,
-        }
-        var fsize = Math.round(age / (3600000*(100-8))+8);
+
+        var fsize = Math.floor(age / (3600000*(100-8))+8);
+        console.log("fsize: ", fsize);
         context.font = fsize+'px sans-serif';
         context.fillText(data.text, data.xPos, data.yPos);
       });
@@ -113,6 +111,12 @@ if (Meteor.isClient) {
       }
     }
   });
+
+  window.ondevicemotion = function(e){
+    var accX = Math.round(e.accelerationIncludingGravity.x*10)/10;
+    var accY = Math.round(e.accelerationIncludingGravity.y*10)/10;
+    // update tweet position with delta movement
+  }
 }
 
 if (Meteor.isServer) {
@@ -145,7 +149,8 @@ if (Meteor.isServer) {
 
 
 // ******  uncomment to turn the stream on: ****** //
-   // stream.on('tweet', handleStream);
+//   stream.on('tweet', handleStream);
+
  });
 
 Meteor.publish("tweets", function () {
@@ -167,8 +172,15 @@ Meteor.methods({
       zPos: Math.random()*(800-10)+5,
     });
   },
+  // updateTweet: function(id, x, y){
+  //   Tweets.update(this.id, {
+  //     $set: {
+  //       {xPos: x},
+  //       {yPos: y},
+  //     }
+  //   });
+  // },
   addHashtag: function(lat, lon, hashtag){
-
     Hashtags.insert({
       lat: lat,
       lon: lon,
