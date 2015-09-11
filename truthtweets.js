@@ -91,10 +91,7 @@ if (Meteor.isClient) {
         // 14400000ms == 4 hrs
         // 3600000ms == 1 hr
         // 1200000ms = 20min
-        var time = {
-          "hour": 3600000,
-          "min": 60000,
-        }
+
         var fsize = Math.floor(age / (3600000*(100-8))+8);
         console.log("fsize: ", fsize);
         context.font = fsize+'px sans-serif';
