@@ -96,9 +96,9 @@ if (Meteor.isClient) {
         // 3600000 ms == 1 hr
         // 1200000 ms = 20min
         // 60000 ms = 1min
-        var ageMax = (15*60000),
+        var ageMax = (8*3600000),
         fsizeMax = 50,
-        fsizeMin = 8;
+        fsizeMin = 1;
         if (age > ageMax){ age = ageMax };
 
         var fsize = Math.floor((((fsizeMin-fsizeMax)*age)/ageMax)+fsizeMax);
@@ -126,7 +126,7 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // for sat: #yaminyc
-    var hashtag = "#internet";
+    var hashtag = "#yaminyc";
 
     Twit = new TwitMaker({
       consumer_key:         Meteor.settings.twitter.consumer_key
@@ -156,7 +156,7 @@ if (Meteor.isServer) {
 
 //**************************************************//
 // ******  uncomment to turn the stream on: ****** //
-  // stream.on('tweet', handleStream);
+  stream.on('tweet', handleStream);
 
  });
 
