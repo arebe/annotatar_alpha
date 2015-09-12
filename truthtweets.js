@@ -92,12 +92,16 @@ if (Meteor.isClient) {
       }
       tweets.map(function(data){
         var age = parseInt(Date.now() - data.createdAt);
-        // 14400000ms == 4 hrs
-        // 3600000ms == 1 hr
-        // 1200000ms = 20min
+        // 14400000 ms == 4 hrs
+        // 3600000 ms == 1 hr
+        // 1200000 ms = 20min
+        // 60000 ms = 1min
+        var ageMax = (15*60000),
+        fsizeMax = 50,
+        fsizeMin = 8;
+        if (age > ageMax){ age = ageMax };
 
-        var fsize = Math.floor(age / (3600000*(100-8))+8);
-        console.log("fsize: ", fsize);
+        var fsize = Math.floor((((fsizeMin-fsizeMax)*age)/ageMax)+fsizeMax);
         context.font = fsize+'px sans-serif';
         context.fillText(data.text, data.xPos, data.yPos);
       });
@@ -121,6 +125,9 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
+    // for sat: #yaminyc
+    var hashtag = "#internet";
+
     Twit = new TwitMaker({
       consumer_key:         Meteor.settings.twitter.consumer_key
       , consumer_secret:      Meteor.settings.twitter.consumer_secret
@@ -141,15 +148,15 @@ if (Meteor.isServer) {
       debugger;
       console.log("***********************", err, "***********************");
       console.log("+++++++++++++++++++++++",tweet,"+++++++++++++++++++++++");
-      Meteor.call("addTweet", tweet.text);
+      Meteor.call("addTweet", tweet.text, hashtag);
     });
 
-    // for sat: #yaminyc
-    var stream = Twit.stream('statuses/filter', { track: '#internet' })
 
+    var stream = Twit.stream('statuses/filter', { track: hashtag });
 
+//**************************************************//
 // ******  uncomment to turn the stream on: ****** //
-//   stream.on('tweet', handleStream);
+  // stream.on('tweet', handleStream);
 
  });
 
@@ -163,9 +170,10 @@ Meteor.publish("hashtags", function () {
 }
 
 Meteor.methods({
-  addTweet: function(text){
+  addTweet: function(text, hashtag){
     Tweets.insert({
       text: text,
+      hashtag: hashtag,
       createdAt: new Date(),
       xPos: Math.random()*(800-10)+5, 
       yPos: Math.random()*(800-10)+5,
