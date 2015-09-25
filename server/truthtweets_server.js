@@ -20,9 +20,9 @@ if (Meteor.isServer) {
     });
 
     var handleStream = Meteor.bindEnvironment(function(tweet, err){
-      debugger;
       console.log("***********************", err, "***********************");
       console.log("+++++++++++++++++++++++",tweet,"+++++++++++++++++++++++");
+      // tweet.text.stripURL().stripUsername().stripHashtag();
       Meteor.call("addTweet", tweet.text, hashtag);
     });
 

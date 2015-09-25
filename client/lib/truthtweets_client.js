@@ -64,7 +64,7 @@ if (Meteor.isClient) {
         video.play();
       }, 
       function(err){
-        console.errr("video capture error: ", err);
+        console.err("video capture error: ", err);
       })
 
     } catch(err){
@@ -99,6 +99,7 @@ if (Meteor.isClient) {
 
         var fsize = Math.floor((((fsizeMin-fsizeMax)*age)/ageMax)+fsizeMax);
         context.font = fsize+'px sans-serif';
+        context.fillStyle = 'rgba('+data.r+','+data.g+','+ data.b+','+ 1.0+')';
         context.fillText(data.text, data.xPos, data.yPos);
       });
 
@@ -127,19 +128,12 @@ if (Meteor.isClient) {
 window.ondevicemotion = function(e){
   var accX = Math.round(e.accelerationIncludingGravity.x*10)/10;
   var accY = Math.round(e.accelerationIncludingGravity.y*10)/10;
-    // update tweet position with delta movement
+    // update tweet position with delta movement -- 
+    // or do we just want to move the tweet relative to the viewport 
+    //(no server call necesary)
   }
 } // end if meteor.isClient
 
-
-
-
-//********** helpers
-
-function getRandom(min, max) {
-  // inclusive
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 
 
