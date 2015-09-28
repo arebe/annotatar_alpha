@@ -135,3 +135,7 @@ header .hide-completed {
   background-color: #0a1433;
   background-image: linear-gradient(to bottom, #0a1433, #e6e7ea 50%);
 }
+
+canvas{
+  font-family: 'Amatic SC', cursive;
+}

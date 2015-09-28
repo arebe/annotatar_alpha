@@ -96,10 +96,12 @@ if (Meteor.isClient) {
         fsizeMax = 50,
         fsizeMin = 0;
         if (age > ageMax){ age = ageMax };
-
         var fsize = Math.floor((((fsizeMin-fsizeMax)*age)/ageMax)+fsizeMax);
-        context.font = fsize+'px sans-serif';
-        context.fillStyle = 'rgba('+data.r+','+data.g+','+ data.b+','+ 1.0+')';
+        alphaMax = 1.0;
+        alphaMin = 0;
+        var alpha = (((alphaMin-alphaMax)*age)/ageMax)+alphaMax;
+        context.font = fsize+'px "Amatic SC"';
+        context.fillStyle = 'rgba('+data.color.r+','+data.color.g+','+ data.color.b+','+ alpha+')';
         context.fillText(data.text, data.xPos, data.yPos);
       });
 
