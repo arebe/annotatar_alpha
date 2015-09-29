@@ -87,12 +87,12 @@ if (Meteor.isClient) {
         return;
       }
       tweets.map(function(data){
-        var age = parseInt(Date.now() - data.createdAt);
+        var age = parseInt(Date.now() - data.tweetCreatedAt);
         // 14400000 ms == 4 hrs
         // 3600000 ms == 1 hr
         // 1200000 ms = 20min
         // 60000 ms = 1min
-        var ageMax = (1200000),
+        var ageMax = (48*3600000),
         fsizeMax = 50,
         fsizeMin = 0;
         if (age > ageMax){ age = ageMax };
@@ -115,13 +115,19 @@ if (Meteor.isClient) {
     }
 
   $("#downloadBtn").click(function(event) {
-    var nameFile = 'fileDownloaded.csv';
+    var filename = 'annotatar_data.csv';
     Meteor.call('download', function(err, fileContent) {
       if(fileContent){
         var blob = new Blob([fileContent], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, nameFile);
+        saveAs(blob, filename);
       }
     })
+  });
+
+  $("#captureBtn").click(function(e){
+    var url = canvas.toDataURL('png');
+    $("#captureLink").attr('href', url).click();
+     
   });
 
 
@@ -130,6 +136,7 @@ if (Meteor.isClient) {
 window.ondevicemotion = function(e){
   var accX = Math.round(e.accelerationIncludingGravity.x*10)/10;
   var accY = Math.round(e.accelerationIncludingGravity.y*10)/10;
+
     // update tweet position with delta movement -- 
     // or do we just want to move the tweet relative to the viewport 
     //(no server call necesary)

@@ -1,7 +1,7 @@
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    // for sat: #yaminyc
-    var hashtag = "#internet";
+    // for sat: #occupyboston
+    var hashtag = "occupyboston";
 
     Twit = new TwitMaker({
       consumer_key:         Meteor.settings.twitter.consumer_key
@@ -10,14 +10,24 @@ if (Meteor.isServer) {
       , access_token_secret:  Meteor.settings.twitter.access_token_secret
     });
 
+    //*** REST
+
     var handleTweets = Meteor.bindEnvironment(function(err, data, response) {
       console.log(data);
-      console.log(err);
+      console.log("***********************", err, "***********************");
       for(var i = 0; i < data.statuses.length; i++){
-        Meteor.call("addTweet", data.statuses[i].text);
+        Meteor.call("addTweet", data.statuses[i].text, hashtag, data.statuses[i].created_at);
       }
       
     });
+
+    Twit.get('search/tweets',
+     {
+       q: hashtag,
+       count: 50
+     }, handleTweets);
+
+   //*** Stream
 
     var handleStream = Meteor.bindEnvironment(function(tweet, err){
       console.log("***********************", err, "***********************");
@@ -31,7 +41,7 @@ if (Meteor.isServer) {
 
     //**************************************************//
     // ******  uncomment to turn the stream on: ****** //
-    stream.on('tweet', handleStream);
+    // stream.on('tweet', handleStream);
 
   }); // end onstartup
 
