@@ -1,7 +1,7 @@
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // for sat: #occupyboston
-    var hashtag = "occupyboston";
+    var hashtag = "occupy";
 
     Twit = new TwitMaker({
       consumer_key:         Meteor.settings.twitter.consumer_key
@@ -21,10 +21,13 @@ if (Meteor.isServer) {
       
     });
 
+
+    //**************************************************//
+    // ******  uncomment to turn the rest on: ****** //
     Twit.get('search/tweets',
      {
        q: hashtag,
-       count: 50
+       count: 20
      }, handleTweets);
 
    //*** Stream
@@ -37,11 +40,11 @@ if (Meteor.isServer) {
     });
 
 
-    var stream = Twit.stream('statuses/filter', { track: hashtag });
+    var stream = Twit.stream('statuses/filter', { track: "#"+hashtag });
 
     //**************************************************//
     // ******  uncomment to turn the stream on: ****** //
-    // stream.on('tweet', handleStream);
+    stream.on('tweet', handleStream);
 
   }); // end onstartup
 
