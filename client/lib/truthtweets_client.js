@@ -2,6 +2,15 @@ if (Meteor.isClient) {
   // This code only runs on the client
   Meteor.subscribe("tweets");
 
+  var offset = {
+    lastTime: 0,
+    time: 0,
+    velX: 0.0,
+    velY: 0.0,
+    x: 0.0,
+    y: 0.0,
+  };
+
   Template.body.helpers({
     tweets: function(){
       return Tweets.find({}, {sort: {createdAt: -1}});
@@ -134,14 +143,18 @@ if (Meteor.isClient) {
   });  // end onstartup
 
 window.ondevicemotion = function(e){
+  var now = Date.now();
+  offset.time = now - offset.lastTime;
+  offset.lastTime = now;
   var accX = Math.round(e.accelerationIncludingGravity.x*10)/10;
   var accY = Math.round(e.accelerationIncludingGravity.y*10)/10;
-  offset.x += 10*accX;
-  offset.y -= 3*accY;
-  console.log("accX: "+accX+" accY: "+accY+" offset.x: "+offset.x+" offset.y: "+offset.y);
+  offset.velX = offset.velX + accX * (offset.time/1000);
+  offset.velY = offset.velY + accY * (offset.time/1000);
+  offset.x += offset.velX;
+  offset.y += offset.velY;
+  console.log("accX: "+accX+" accY: "+accY+" offset.x: "+offset.x+" offset.y: "+offset.y+" offset.time: "+offset.time/1000);
 
-  accX = 0;
-  accY = 0; 
+  offset.velX, offset.velY = 0;
 
     // update tweet position with delta movement -- 
     // or do we just want to move the tweet relative to the viewport 
