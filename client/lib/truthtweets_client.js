@@ -146,19 +146,18 @@ window.ondevicemotion = function(e){
   var now = Date.now();
   offset.time = now - offset.lastTime;
   offset.lastTime = now;
+  var interval = e.interval;
   var accX = Math.round(e.accelerationIncludingGravity.x*10)/10;
   var accY = Math.round(e.accelerationIncludingGravity.y*10)/10;
-  offset.velX = offset.velX + accX * (offset.time/1000);
-  offset.velY = offset.velY + accY * (offset.time/1000);
-  offset.x += offset.velX;
-  offset.y += offset.velY;
-  console.log("accX: "+accX+" accY: "+accY+" offset.x: "+offset.x+" offset.y: "+offset.y+" offset.time: "+offset.time/1000);
+  offset.velX = offset.velX + (accX * (offset.time/1000));
+  offset.velY = offset.velY + (accY * (offset.time/1000));
+  offset.x += accX;
+  offset.y -= offset.velY;
+  console.log("accX: "+accX+" accY: "+accY+" offset.x: "+offset.x+" offset.y: "+offset.y+" offset.time: "+offset.time/1000+" interval: "+interval);
 
-  offset.velX, offset.velY = 0;
+  offset.velX = 0;
+  offset.velY = 0;
 
-    // update tweet position with delta movement -- 
-    // or do we just want to move the tweet relative to the viewport 
-    //(no server call necesary)
   }
 } // end if meteor.isClient
 
