@@ -102,7 +102,7 @@ if (Meteor.isClient) {
         var alpha = (((alphaMin-alphaMax)*age)/ageMax)+alphaMax;
         context.font = fsize+'px "Amatic SC"';
         context.fillStyle = 'rgba('+data.color.r+','+data.color.g+','+ data.color.b+','+ alpha+')';
-        context.fillText(data.text, data.xPos, data.yPos);
+        context.fillText(data.text, data.xPos+offset.x, data.yPos+offset.y);
       });
 
     }
@@ -136,6 +136,12 @@ if (Meteor.isClient) {
 window.ondevicemotion = function(e){
   var accX = Math.round(e.accelerationIncludingGravity.x*10)/10;
   var accY = Math.round(e.accelerationIncludingGravity.y*10)/10;
+  offset.x += 10*accX;
+  offset.y -= 3*accY;
+  console.log("accX: "+accX+" accY: "+accY+" offset.x: "+offset.x+" offset.y: "+offset.y);
+
+  accX = 0;
+  accY = 0; 
 
     // update tweet position with delta movement -- 
     // or do we just want to move the tweet relative to the viewport 

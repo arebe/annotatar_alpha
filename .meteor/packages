@@ -11,3 +11,5 @@ fds:pixijs
 houston:admin
 lfergon:exportcsv
 mrt:simplex-noise.js
+iron:router
+global-constants
