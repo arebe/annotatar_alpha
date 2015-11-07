@@ -24,11 +24,11 @@ if (Meteor.isServer) {
 
     //**************************************************//
     // ******  uncomment to turn the rest on: ****** //
-    Twit.get('search/tweets',
-     {
-       q: hashtag,
-       count: 20
-     }, handleTweets);
+    // Twit.get('search/tweets',
+    //  {
+    //    q: hashtag,
+    //    count: 20
+    //  }, handleTweets);
 
    //*** Stream
 
