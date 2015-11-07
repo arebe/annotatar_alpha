@@ -44,7 +44,7 @@ if (Meteor.isServer) {
 
     //**************************************************//
     // ******  uncomment to turn the stream on: ****** //
-    stream.on('tweet', handleStream);
+   // stream.on('tweet', handleStream);
 
   }); // end onstartup
 

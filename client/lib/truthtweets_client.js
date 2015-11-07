@@ -25,7 +25,8 @@ if (Meteor.isClient) {
     navLat, navLong, accurate,
     hashtag;
 
-
+    console.log("video w: ", video.width, " video h: ", video.height);
+    console.log("window w: ", $(window).width())
     context.canvas.width = $(window).width();
     context.canvas.height = $(window).height();
     context.font = "20px serif";
@@ -84,7 +85,22 @@ if (Meteor.isClient) {
     video.style.visibility = "hidden";
 
     setInterval(function(){
-      var img = context.drawImage(video, 0, 0);
+      var x, y, w, h;
+      if ((video.width - $(window).width()) > (video.height - $(window).height())) {
+        // portrait
+        x = (video.width - $(window).width())/2;
+        y = 0;
+        w = video.width * ($(window).height()/video.height);
+        h = $(window).height();
+      }
+      else {
+        // landscape
+        x = 0;
+        y = (video.height - $(window).height())/2;
+        w = $(window).width();
+        h = video.height * ($(window).width()/video.width);
+      }
+      var img = context.drawImage(video, x, y, w, h);
       renderTweets();
       //("geolocation" in navigator) ? renderTweets() : renderNoTweets("Please enable geolocation for full AR experience!");
     }, 100);
@@ -101,7 +117,7 @@ if (Meteor.isClient) {
         // 3600000 ms == 1 hr
         // 1200000 ms = 20min
         // 60000 ms = 1min
-        var ageMax = (3600000),
+        var ageMax = (1200000),
         fsizeMax = 50,
         fsizeMin = 0;
         if (age > ageMax){ age = ageMax };

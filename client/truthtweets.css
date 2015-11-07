@@ -136,6 +136,13 @@ header .hide-completed {
   background-image: linear-gradient(to bottom, #0a1433, #e6e7ea 50%);
 }
 
-canvas{
+canvas {
   font-family: 'Amatic SC', cursive;
+  width: 100% !important;
+  height: auto !important;
+}
+
+video {
+  width: 100% !important;
+  height: auto !important;
 }
