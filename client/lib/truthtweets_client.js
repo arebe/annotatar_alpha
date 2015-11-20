@@ -121,7 +121,7 @@ if (Meteor.isClient) {
       console.log("window.width: "+ $(window).width(), " window.height: ", $(window).height());
       console.log("video.width: ", vid.w, " video.height: ", vid.h);
       console.log("scale.x: ", scale.x, " scale.y: ", scale.y);
-      if ((vid.w - $(window).width()) > (vid.h - $(window).height())) {
+      if ($(window).width() < $(window).height()) {
         // portrait
         y = 0;
         if(scale.y < 1){
@@ -150,7 +150,7 @@ if (Meteor.isClient) {
           h = vid.h ;           
         }
       }
-
+      console.log("source w: ", w, " source h: ", h);
       var img = context.drawImage(video, x, y, w, h, 0, 0, $(window).width(), $(window).height());
       renderTweets();
       //("geolocation" in navigator) ? renderTweets() : renderNoTweets("Please enable geolocation for full AR experience!");
