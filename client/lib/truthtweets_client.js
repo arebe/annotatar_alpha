@@ -85,34 +85,87 @@ if (Meteor.isClient) {
     video.style.visibility = "hidden";
 
     setInterval(function(){
-      var x, y, w, h;
-      if ((video.width - $(window).width()) > (video.height - $(window).height())) {
-        // portrait
-        x = (video.width - $(window).width())/2;
-        y = 0;
-        w = video.width * ($(window).height()/video.height);
-        h = $(window).height();
-      }
-      else {
-        // landscape
-        x = 0;
-        y = (video.height - $(window).height())/2;
-        w = $(window).width();
-        h = video.height * ($(window).width()/video.width);
-      }
-      var img = context.drawImage(video, x, y, w, h);
+      // var x, y, 
+      // w = $(window).width(), 
+      // h = $(window).height();
+      // rat = video.height / video.width;
+      // // detect if portrait or landscape
+      // if($(window).width() > $(window).height()){
+      //   // it's landscape!
+      //   x = 0;
+      //   y = video.height > $(window).height() ? (video.height - $(window).height())/2 : 0;
+
+      // }
+      // else{
+      //   // it's portait! 
+      //   x = video.width > $(window).width() ? (video.width - $(window).width())/2 : 0;
+      //   y = 0;
+
+      // }
+
+      // detect if video dims are larger than viewport dims
+      // if ((video.width - $(window).width()) > (video.height - $(window).height())) {
+      //   // portrait
+      //   x = (video.width - $(window).width())/2;
+      //   y = 0;
+      //   w = video.width * ($(window).height()/video.height);
+      //   h = $(window).height();
+      // }
+      // else {
+      //   // landscape
+      //   x = 0;
+      //   y = (video.height - $(window).height())/2;
+      //   w = $(window).width();
+      //   h = video.height * ($(window).width()/video.width);
+      // }
+      var img = context.drawImage(video, 0, 0);
       renderTweets();
       //("geolocation" in navigator) ? renderTweets() : renderNoTweets("Please enable geolocation for full AR experience!");
     }, 100);
 
-    var renderTweets = function(){
-      var tweets = Tweets.find({}, {sort: {createdAt: -1}}).fetch();
-      if(!tweets.length) {
-        console.log("no tweets");
-        return;
+// from https://gist.github.com/zachstronaut/1184900
+  window.addEventListener(
+    'load',
+    function () {
+      var canvas = document.getElementsByTagName('canvas')[0];
+
+      fullscreenify(canvas);
+    },
+    false
+    );
+
+  function fullscreenify(canvas) {
+    var style = canvas.getAttribute('style') || '';
+    
+    window.addEventListener('resize', function () {resize(canvas);}, false);
+
+    resize(canvas);
+
+    function resize(canvas) {
+      var scale = {x: 1, y: 1};
+      scale.x = (window.innerWidth - 10) / canvas.width;
+      scale.y = (window.innerHeight - 10) / canvas.height;
+
+      if (scale.x < 1 || scale.y < 1) {
+        scale = '1, 1';
+      } else if (scale.x < scale.y) {
+        scale = scale.x + ', ' + scale.x;
+      } else {
+        scale = scale.y + ', ' + scale.y;
       }
-      tweets.map(function(data){
-        var age = parseInt(Date.now() - data.tweetCreatedAt);
+
+      canvas.setAttribute('style', style + ' ' + '-ms-transform-origin: center top; -webkit-transform-origin: center top; -moz-transform-origin: center top; -o-transform-origin: center top; transform-origin: center top; -ms-transform: scale(' + scale + '); -webkit-transform: scale3d(' + scale + ', 1); -moz-transform: scale(' + scale + '); -o-transform: scale(' + scale + '); transform: scale(' + scale + ');');
+    }
+  }
+
+  var renderTweets = function(){
+    var tweets = Tweets.find({}, {sort: {createdAt: -1}}).fetch();
+    if(!tweets.length) {
+      console.log("no tweets");
+      return;
+    }
+    tweets.map(function(data){
+      var age = parseInt(Date.now() - data.tweetCreatedAt);
         // 14400000 ms == 4 hrs
         // 3600000 ms == 1 hr
         // 1200000 ms = 20min
@@ -130,14 +183,14 @@ if (Meteor.isClient) {
         context.fillText(data.text, data.xPos+offset.x, data.yPos+offset.y);
       });
 
-    }
+  }
 
-    var renderNoTweets = function(message){
-      for(var i = 0; i < 30; i++){
-        context.fillStyle("#f11");
-        context.fillText(message, 10, (10*i));
-      }
+  var renderNoTweets = function(message){
+    for(var i = 0; i < 30; i++){
+      context.fillStyle("#f11");
+      context.fillText(message, 10, (10*i));
     }
+  }
 
   $("#downloadBtn").click(function(event) {
     var filename = 'annotatar_data.csv';
@@ -152,13 +205,13 @@ if (Meteor.isClient) {
   $("#captureBtn").click(function(e){
     var url = canvas.toDataURL('png');
     $("#captureLink").attr('href', url).click();
-     
+
   });
 
 
   });  // end onstartup
 
-window.ondevicemotion = function(e){
+  window.ondevicemotion = function(e){
   // var now = Date.now();
   // offset.time = now - offset.lastTime;
   // offset.lastTime = now;
@@ -182,7 +235,7 @@ window.ondevicemotion = function(e){
   // offset.velX = 0;
   // offset.velY = 0;
 
-  }
+}
 } // end if meteor.isClient
 
 
